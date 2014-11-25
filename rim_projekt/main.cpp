@@ -1,6 +1,7 @@
 #include "my_portaudio.h"
 
 
+//Sprawdzenie czy komitowanie dziala
 int main()
 {
 	//inicjalizacja portAudio
