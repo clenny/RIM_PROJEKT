@@ -49,16 +49,64 @@ int patestPlayCallback( const void *inputBuffer, void *outputBuffer,
 }
 
 
-int policz_srednia( paRecData data )
+int process_samples( paRecData data )
 {
-	float wynik = 0.0f;
+	//alokacja tablicy wejsciowej dla fft
+	double *fft_input = NULL;
+	int nc = 0;
+	fftw_complex *fft_out = NULL;
+	fftw_plan plan_forward;
+
+	fft_input = (double*) fftw_malloc( sizeof ( double ) * SAMPLE_RATE*NUM_SECONDS );
+
+	//kopiowanie danych dla fft
 	for ( int i = 0; i < SAMPLE_RATE*NUM_SECONDS; i++ )
 	{
-		wynik += data.leftChannel[i];
+		fft_input[i] = data.leftChannel[i];
 	}
-	wynik = wynik/(SAMPLE_RATE*NUM_SECONDS);
 
-	printf("%f\n", wynik);
+	//alokacja pamieci dla wyniku fft
+	nc = ( SAMPLE_RATE*NUM_SECONDS / 2) + 1;
+	fft_out = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * nc );
+
+	//wyznaczenie planu oblicznia fft oraz obliczenie fft
+	plan_forward = fftw_plan_dft_r2c_1d( SAMPLE_RATE*NUM_SECONDS, fft_input, fft_out, FFTW_ESTIMATE );
+
+    fftw_execute ( plan_forward );
+
+	double wynik = get_max_module( fft_out, nc );
+
+	printf("%f\n", wynik );
+
+	//dealokacja pamieci
+	fftw_free( fft_input );
+	fftw_free( fft_out );
+
+
 
 	return 0;
+}
+
+
+double get_max_module( fftw_complex *in, int nc )
+{
+	double *modules = NULL;
+
+	modules = (double*) malloc( sizeof(double) * nc);
+
+	double wynik = 0;
+	//obliczanie modulow dla kazdego punktu z obliczen fft
+	for ( int i = 0; i < nc; i++ )
+	{
+		modules[i] = in[i][0]*in[i][0] + in[i][1]*in[i][1];
+
+		if ( wynik < modules[i] )
+		{
+			wynik = modules[i];
+		}
+	}
+
+	free(modules);
+
+	return wynik;
 }

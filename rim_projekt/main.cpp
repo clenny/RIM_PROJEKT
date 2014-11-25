@@ -53,7 +53,7 @@ int main()
 		dataRec.left_phase = 0;
 		dataRec.right_phase = 0;
 
-		int test = policz_srednia(dataRec);
+		process_samples ( dataRec );
 
 	}
 	

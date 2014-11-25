@@ -1,8 +1,10 @@
 #include <portaudio.h>
 #include <stdio.h>
+#include <fftw3.h>
+#include <complex>
 
 
-#define SAMPLE_RATE (4410)
+#define SAMPLE_RATE (44100)
 #define NUM_SECONDS (1)
 
 
@@ -36,4 +38,6 @@ int patestPlayCallback( const void *inputBuffer, void *outputBuffer,
 							  void *userData );
 
 
-int policz_srednia( paRecData data);
+int process_samples( paRecData data );
+
+double get_max_module( fftw_complex *in, int nc );
