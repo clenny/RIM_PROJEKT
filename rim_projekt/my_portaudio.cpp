@@ -88,6 +88,7 @@ int process_samples( paRecData data )
 }
 
 
+//zawartosc tej funkcji jest mocno do poprawy
 double get_max_module( fftw_complex *in, int nc )
 {
 	double *modules = NULL;
