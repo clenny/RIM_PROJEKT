@@ -15,6 +15,7 @@ int main()
 
 	while (1) 
 	{
+		//komentarz test
 		err = Pa_OpenDefaultStream( &stream,
 			2,          /* no input channels */
 			0,          /* stereo output */
